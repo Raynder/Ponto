@@ -1,0 +1,194 @@
+/* Estilos do painel do site */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+}
+
+header {
+    height: 55px;
+    background-color: #1d1552;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+
+.nome-empresa {
+    font-size: 1rem;
+    white-space: nowrap;
+    color: #fff;
+    height: 100%;
+    position: relative;
+}
+
+.nome-empresa>span {
+    position: relative;
+    top: 30%;
+}
+
+.menu-header {
+    height: 100%;
+    display: flex;
+    position: relative;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.menu-lateral {
+    background: #fff;
+    width: 100px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin-top: 55px;
+    box-shadow: 1px 0 9px rgb(0 0 0 / 10%);
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+.menu-lateral>nav>ul>a>li>img {
+    width: 50%;
+    left: 50%;
+    position: relative;
+    transform: translateX(-50%);
+    margin: 10px 0;
+    box-shadow: 1px 0 9px rgb(0 0 0 / 10%);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.menu-lateral>nav>ul>a>li>img:hover {
+    box-shadow: 1px 0 9px #6177a9;
+}
+
+.conteudo-central {
+    border-radius: 10px;
+    height: 90vh;
+    width: 90%;
+    background: #fff;
+    left: 120px;
+    top: 72px;
+    position: relative;
+}
+
+.demais-informacoes {
+    width: 100%;
+}
+
+.usuario-logado {
+    float: right;
+    height: 100%;
+}
+
+.usuario-logado>a {
+    position: relative;
+    top: 30%;
+    margin-right: 20px;
+    color: white !important;
+}
+
+/* Fim do Estilo */
+
+  
+/* Estilo de configuração do painel */
+
+nav.opcoes-edicao ul {
+    background: #f5f7fa;
+    display: flex;
+    list-style: none;
+}
+
+.opcoes-edicao>ul>li {
+    padding: 10px 20px;
+    font-size: 16pt;
+}
+
+.opcoes-edicao>ul>li.ativo {
+    background: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: solid 1px #1d1552;
+    border-bottom: none;
+}
+
+.tabela {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    margin: 20px;
+}
+
+.tabela>table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13pt;
+}
+
+.caixa-de-pesquisa {
+    /* max-width: 400px; */
+    padding: 20px;
+    height: 30px;
+}
+
+/* Paginação */
+.divPagination {
+    position: relative;
+}
+
+ul.pagination {
+    position: absolute;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+ul.pagination li {
+    display: inline;
+}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+ul.pagination li a.active {
+    background-color: #1d1552;
+    color: white;
+    border-radius: 5px;
+}
+
+ul.pagination li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.caixa-de-pesquisa > button {
+    padding: 10px;
+    position: relative;
+    float: right;
+    background: #1d1552;;
+    color: white;
+}
+.caixa-de-pesquisa > input{
+    font-size: 13pt;
+}
+.acoes {
+    display: flex;
+    justify-content: center;
+}
+
+/* Fim do estilo de configuração do painel */
