@@ -10,23 +10,32 @@
             $this->sql = new Database();
         }
 
-        public function entrar($dados){
-            $query = "SELECT * FROM usuarios WHERE email = :email AND senha = :senha";
+        public function entrar($dados, $table){
+            switch($table){
+                case 'colaborador':
+                    $query = "SELECT * FROM usuarios WHERE usuario = :usuario AND senha = :senha AND tipo = 1 or tipo = 3";
+                    break;
+                case 'empregador':
+                    $query = "SELECT * FROM usuarios WHERE usuario = :usuario AND senha = :senha AND tipo = 2 or tipo = 3";
+                    break;
+            }
+
             $array = array(
-                ':email' => $dados['email'],
-                ':senha' => md5($dados['senha'])
+                ':usuario' => $dados['usuario'],
+                ':senha' => $dados['senha']
             );
             $resul = $this->sql->select($query, $array);
             if(count($resul) > 0){
                 $_SESSION['usuario']['id'] = $resul[0]['id'];
                 $_SESSION['usuario']['nome'] = $resul[0]['nome'];
-                $_SESSION['usuario']['email'] = $resul[0]['email'];
-                $_SESSION['usuario']['cnpj'] = $resul[0]['cnpj'];
+                $_SESSION['usuario']['usuario'] = $resul[0]['usuario'];
+                $_SESSION['usuario']['tipo'] = $resul[0]['tipo'];
+                $_SESSION['usuario']['home'] = $table;
                 
-                return ['status' => 'sucesso', 'msg' => 'Usuário logado com sucesso!'];
+                exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Usuário logado com sucesso!', 'redirecionar' => 'controle/'.$table]));
             }
             else{
-                return ['status' => 'erro', 'msg' => 'Usuário ou senha incorretos!'];
+                exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Usuário ou senha incorretos!', 'redirecionar' => 'sistema/entrar']));
             }
         }
 
@@ -47,7 +56,6 @@
         }
 
         public function cadastrar($table, $dados){
-            $sql = new Database();
             $query = "INSERT INTO $table (";
             $campos = "";
             $valores = "";
@@ -61,7 +69,7 @@
             $valores = substr($valores, 0, -2);
             
             $query .= $campos.") VALUES (".$valores.")";
-            if($sql->insere($query, $dados)){
+            if($this->sql->insere($query, $dados)){
                 exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Registro salvo com sucesso!']));
             }
             else{

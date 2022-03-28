@@ -14,17 +14,25 @@
             <div class="corpo">
                 <nav>
                     <ul>
-                        <li><a href="sistema/usuarios">Empregador</a></li>
-                        <li>Colaborador</li>
-                        <li>Registro</li>
+                        <?php
+                        foreach ($dados['menus'] as $menu) {
+                            if($menu == $dados['ativo']){
+                                echo '<li class="ativo">';
+                            }else{
+                                echo '<li>';
+                            }
+
+                            echo "<a href='".URL."sistema/{$menu}'>{$menu}</a></li>";
+                        }
+                        ?>
                     </ul>
                 </nav>
 
                 <form action="">
-                    <input type="text" placeholder="USUARIO" name="usuario">
-                    <input type="text" placeholder="SENHA" name="senha">
+                    <input class="inp" type="text" placeholder="USUARIO" name="usuario">
+                    <input class="inp" type="text" placeholder="SENHA" name="senha">
 
-                    <input type="button" value="REGISTRAR">
+                    <input type="button" onclick="<?= $dados['funcao']."('".$dados['ativo']."')" ?>" value="<?= ucFirst($dados['funcao']) ?>" class="botao">
                     <a href="">Recuperar senha</a>
                 </form>
 

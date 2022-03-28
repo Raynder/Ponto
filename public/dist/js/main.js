@@ -2,6 +2,7 @@ var criterios = 0;
 var split = 0;
 var entao = 0;
 var campoAlvo;
+var url = "http://10.3.7.113/Ponto/";
 
 function selecAll(parametro) {
     return document.querySelectorAll(parametro)
@@ -45,3 +46,29 @@ function selecValues(alvo) {
     }
     return dados;
 }
+
+//Funções do index
+function entrar(table) {
+    let dados = selecValues('.conteudo-registro>.painel>.corpo>form>.inp');
+
+    if (dados) {
+        $.ajax({
+            url: url + 'conta/entrar',
+            type: 'POST',
+            data: {
+                dados: dados,
+                table: table
+            },
+            success: (response) => {
+                resposta = JSON.parse(response.split('resultadoJson')[1]);
+                alerta(resposta.mensagem, resposta.status);
+                setTimeout(function () {
+                    window.location.href = url + resposta.redirecionar;
+                }, 1000);
+            }
+        })
+    }
+
+}
+
+//Fim das funções do index

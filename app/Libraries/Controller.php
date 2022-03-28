@@ -21,7 +21,9 @@
                 $this->view($view, $array);
                 return true;
             }else{
-                $this->view('conta/index');
+                //redirecionar para pagina de login
+                header('Location: '.URL.'sistema/index');
+                // $this->view('conta/index');
                 return false;
             }
         }

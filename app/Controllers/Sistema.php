@@ -2,93 +2,44 @@
 
     class Sistema extends Controller {
 
-        public function index($nomeSistema = "") {
-            $this->view('sistema/index');
-        }
-
-        private function listarColunas(){
-            return ['usuarios', 'escalas'];
-        }
-
-        public function controle(){
-            $model = new Usuario();
+        public function index() {
             $dados = array(
-                'linhas' => $model->listar('usuarios'),
-                'colunas' => [['nome',0,3], ['usuario',0,3], ['senha',0,2], ['email',0,3], ['escala',0,3]],
-                'listas' => $this->listarColunas(),
-                'lista' => 'usuarios'
-            );
-            $this->view('sistema/controle', $dados);
-        }
-
-        public function usuarios(){
-            $model = new Usuario();
-
-            #pegar nome concatenado com : e id de cada escala do banco
-            $aux = $model->listar('escalas');
-            $listaDeEscalas = [];
-
-            foreach ($aux as $escala) {
-                $listaDeEscalas = array_merge($listaDeEscalas,  [$escala['id']. ':' . $escala['nome']]);
-            }
-            
-            $dados = array(
-                'linhas' => $model->listar('usuariosJoin'),
-                'colunas' => [['nome',0,3], ['usuario',0,3], ['senha',0,2], ['email',0,3], ['escala',$listaDeEscalas,3]],
-                'listas' => $this->listarColunas(),
-                'lista' => 'usuarios'
+                'menus' => ['empregador', 'colaborador', 'registro'],
+                'ativo' => 'registro',
+                'funcao' => 'registrar'
             );
 
-            #sql que recebe todos os usuario junto com o nome da escala
-            $sql = "SELECT usuarios.id, usuarios.nome, usuarios.usuario, usuarios.senha, usuarios.email, escalas.nome as escala FROM usuarios INNER JOIN escalas ON usuarios.escala = escalas.id";
-
-            $this->view('sistema/controle', $dados);
+            $this->view('sistema/index', $dados);
         }
 
-        public function escalas(){
-            $model = new Usuario();
+        public function registro() {
             $dados = array(
-                'linhas' => $model->listar('escalas'),
-                'colunas' => [['nome',0,3], ['jornada',0,2], ['domingo',1,2], ['segunda',1,2], ['terca',1,2], ['quarta',1,2], ['quinta',1,2], ['sexta',1,2], ['sabado',1,2]],
-                'listas' => $this->listarColunas(),
-                'lista' => 'escalas'
+                'menus' => ['empregador', 'colaborador', 'registro'],
+                'ativo' => 'registro',
+                'funcao' => 'registrar'
             );
-            $this->view('sistema/controle', $dados);
+
+            $this->view('sistema/index', $dados);
         }
 
-        public function cadastrar(){
-            $model = new Usuario();
+        public function colaborador() {
+            $dados = array(
+                'menus' => ['empregador', 'colaborador', 'registro'],
+                'ativo' => 'colaborador',
+                'funcao' => 'entrar'
+            );
 
-            if(isset($_POST['dados']['id']) && !empty($_POST['dados']['id'])){
-                if($model->atualizar($_POST['table'],$_POST['dados'])){
-                    return true;
-                }
-                return false;
-            }
-            else{
-                if($model->cadastrar($_POST['table'], $_POST['dados'])){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
+            $this->view('sistema/index', $dados);
         }
 
-        public function deletar(){
-            $model = new Usuario();
-            if($model->deletar($_POST['table'], $_POST['valor'])){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
+        public function empregador() {
+            $dados = array(
+                'menus' => ['empregador', 'colaborador', 'registro'],
+                'ativo' => 'empregador',
+                'funcao' => 'entrar'
+            );
 
-        public function editar(){
-            $model = new Usuario();
-
-            $dados = $model->editar($_POST['table'], $_POST['valor']);
+            $this->view('sistema/index', $dados);
         }
 
     }

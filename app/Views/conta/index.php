@@ -40,7 +40,7 @@ e[s]=e[s]||[],e.zaraz._preTrack=[],e.zaraz.track=(t,r)=>e.zaraz._preTrack.push([
 			echo '<div class="alert alert-info">'.$msg.'</div>';
 		}
 	?>
-<form method="POST" action="<?=URL?>conta/entrar" class="login100-form validate-form">
+<form method="POST" action="<?=URL?>sistema/index" class="login100-form validate-form">
 <span class="login100-form-title p-b-26">
 <?=APP_NOME?> CLIENTE
 </span>

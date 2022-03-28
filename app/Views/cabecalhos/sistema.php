@@ -1,6 +1,5 @@
 <?php
-// if (isset($_SESSION['usuario']['nome']) && !empty($_SESSION['usuario']['nome'])) {
-if (true) {
+if (isset($_SESSION['usuario']['nome']) && !empty($_SESSION['usuario']['nome'])) {
 ?>
     <header>
         <div class="menu-header">
@@ -23,18 +22,18 @@ if (true) {
     <div class="menu-lateral">
         <nav>
             <ul>
-                <a href="<?= URL ?>">
-                    <li><img src="<?= DIST ?>/img/home.png"></li>
+                <a href="<?= URL ?>controle/<?= $_SESSION['usuario']['home'] ?>">
+                    <li><img src="<?= DIST ?>/img/cadastro.png"></li>
                 </a>
-                <a href="<?= URL ?>formPreco/index">
-                    <li><img src="<?= DIST ?>/img/home.png"></li>
+                <a href="<?= URL ?>controle/index">
+                    <li><img src="<?= DIST ?>/img/tabela.png"></li>
                 </a>
-                <a href="<?= URL ?>formPreco/regras">
+                <!-- <a href="<?= URL ?>formPreco/regras">
                     <li><img src="<?= DIST ?>/img/home.png"></li>
                 </a>
                 <a href="<?= URL ?>formPreco/configuracoes">
                     <li><img src="<?= DIST ?>/img/home.png"></li>
-                </a>
+                </a> -->
             </ul>
         </nav>
     </div>

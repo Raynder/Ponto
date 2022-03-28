@@ -4,29 +4,23 @@ class Conta extends Controller
 {
     public function index()
     {
-        $this->view('conta/index');
+        $this->view('sistema/index');
     }
 
-    public function entrar()
-    {
+    public function entrar(){
         if($_POST){
-            $dados = [
-                'email' => $_POST['email'],
-                'senha' => $_POST['senha']
-            ];
 
             $user = new Usuario();
-            $retorno = $user->entrar($dados);
-            $this->view('conta/index', $retorno);
+            $retorno = $user->entrar($_POST['dados'], $_POST['table']);
+            $this->view('sistema/index', $retorno);
         }
         else{
-            $this->view('conta/index');
+            $this->view('sistema/index');
         }
 
     }
 
-    public function cadastre()
-    {
+    public function cadastre(){
         if($_POST) {
             $dados = [
                 'nome' => $_POST['nome'],
@@ -49,7 +43,13 @@ class Conta extends Controller
     public function sair(){
         $user = new Usuario();
         $retorno = $user->sair();
-        $this->view("conta/index", $retorno);
+
+        $dados = array(
+            'menus' => ['empregador', 'colaborador', 'registro'],
+            'ativo' => 'registro',
+            'funcao' => 'registrar'
+        );
+        $this->view("sistema/index", $dados);
     }
 
 
