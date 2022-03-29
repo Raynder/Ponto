@@ -96,7 +96,7 @@ class Controle extends Controller
         $model = new Usuario();
         $dados = array(
             'linhas' => $model->listar('escalas'),
-            'colunas' => [['nome', 0, 3], ['jornada', 0, 2], ['domingo', 1, 2], ['segunda', 1, 2], ['terca', 1, 2], ['quarta', 1, 2], ['quinta', 1, 2], ['sexta', 1, 2], ['sabado', 1, 2]],
+            'colunas' => [['nome', 0, 3], ['jornada', 0, 3], ['domingo', 0, 2], ['segunda', 0, 2], ['terca', 0, 2], ['quarta', 0, 2], ['quinta', 0, 2], ['sexta', 0, 2], ['sabado', 0, 2]],
             'listas' => $this->listarColunas(),
             'lista' => 'escalas'
         );

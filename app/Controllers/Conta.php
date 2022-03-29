@@ -52,5 +52,15 @@ class Conta extends Controller
         $this->view("sistema/index", $dados);
     }
 
+    public function registrar(){
+        if(isset($_POST['usuario']) && isset($_POST['senha'])){
+            $user = new Usuario();
+            $retorno = $user->registrar($_POST['usuario'], $_POST['senha']);
+            $this->view('sistema/index', $retorno);
+        }
+        else{
+            $this->view('sistema/index');
+        }
+    }
 
 }

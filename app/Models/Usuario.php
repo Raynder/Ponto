@@ -55,6 +55,133 @@
             return $resul;
         }
 
+        public function registrar($usuario, $senha){
+            $semana = array('','domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado');
+            
+            $dia_semana = $semana[date('w')];
+            // Buscar id do usuário
+            $query = "SELECT usuarios.id, escalas.$dia_semana as meta FROM usuarios INNER JOIN escalas ON usuarios.escala = escalas.id WHERE usuario = :usuario AND senha = :senha";
+            $array = array(
+                ':usuario' => $usuario,
+                ':senha' => $senha
+            );
+            $resul = $this->sql->select($query, $array);
+            if(count($resul) > 0){
+                $meta = $resul[0]['meta'];
+                $id_usuario = $resul[0]['id'];
+                $agora = date('Y-m-d H:i:s');
+                $hoje = date('Y-m-d');
+                $query = "SELECT * FROM folha WHERE id_usuario = :id_usuario AND data = :data";
+                $array = array(
+                    ':id_usuario' => $id_usuario,
+                    ':data' => $hoje
+                );
+                $resul = $this->sql->select($query, $array);
+                if(count($resul) > 0){
+                    //transformar meta em horas
+                    $meta = $meta * 60 * 60;
+                    // verificar se ent1, sai1, ent2, sai2 foram preenchidos
+
+                    $batidas = array(
+                        'ent1' => $resul[0]['ent1'],
+                        'sai1' => $resul[0]['sai1'],
+                        'ent2' => $resul[0]['ent2'],
+                        'sai2' => $resul[0]['sai2']
+                    );
+
+                    //encontrar primeira batida vazia e salvar o horario de agora
+                    foreach($batidas as $key => $value){
+                        if($key == 'sai2' && $value == '0000-00-00 00:00:00'){
+                            //calcular tempo trabalhado
+                            $entrada1 = new DateTime($batidas['ent1']);
+                            $saida1 = new DateTime($batidas['sai1']);
+                            $entrada2 = new DateTime($batidas['ent2']);
+                            $saida2 = new DateTime($agora);
+                            $tempo_trabalhado = $saida1->diff($entrada1);
+                            $tempo_trabalhado2 = $saida2->diff($entrada2);
+
+                            // somar as diferenças
+                            $tempo_trabalhado = $tempo_trabalhado->format('%H:%I:%S');
+                            $tempo_trabalhado2 = $tempo_trabalhado2->format('%H:%I:%S');
+                            $tempo_trabalhado = explode(':', $tempo_trabalhado);
+                            $tempo_trabalhado2 = explode(':', $tempo_trabalhado2);
+                            $tempo_trabalhado = $tempo_trabalhado[0] * 3600 + $tempo_trabalhado[1] * 60 + $tempo_trabalhado[2];
+                            $tempo_trabalhado2 = $tempo_trabalhado2[0] * 3600 + $tempo_trabalhado2[1] * 60 + $tempo_trabalhado2[2];
+                            $tempo_trabalhado = $tempo_trabalhado + $tempo_trabalhado2;
+                            $tempo = $tempo_trabalhado;
+
+                            //transformar tempo_trabalhado em horas e minutos
+                            $tempo_trabalhado = gmdate("H:i:s", $tempo_trabalhado);
+                            if($meta > $tempo){
+                                $saldo = $meta - $tempo;
+                                $saldo = '-'.gmdate("H:i:s", $saldo);
+                            }
+                            else{
+                                $saldo = $tempo - $meta;
+                                $saldo = gmdate("H:i:s", $saldo);
+                            }
+                            echo($saldo);
+                            // exit();
+                            
+
+                            $query = "UPDATE folha SET $key = :$key, tempo_trabalhado = :tempo_trabalhado, saldo = :saldo WHERE id_usuario = :id_usuario AND data = :data";
+                            $array = array(
+                                ':'.$key => $agora,
+                                ':tempo_trabalhado' => $tempo_trabalhado,
+                                ':id_usuario' => $id_usuario,
+                                ':data' => $hoje,
+                                ':saldo' => $saldo
+                            );
+
+                            $resul = $this->sql->update($query, $array);
+                            if($resul){
+                                exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Ponto registrada com sucesso!', 'redirecionar' => 'sistema/home']));
+                            }
+                            else{
+                                exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Erro ao registrar ponto!', 'redirecionar' => 'sistema/home']));
+                            }
+                        }
+                        else{
+                            //pegar o dia da semana
+                            if($key == 'sai2'){
+                                exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Você ja registrou todos os horarios de hoje!', 'redirecionar' => 'sistema/home']));
+                            }
+                            if($value == '0000-00-00 00:00:00'){
+                                $query = "UPDATE folha SET $key = :agora WHERE id_usuario = :id_usuario AND data = :data";
+                                $array = array(
+                                    ':agora' => $agora,
+                                    ':id_usuario' => $id_usuario,
+                                    ':data' => $hoje
+                                );
+                                if($this->sql->update($query, $array)){
+                                    exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Ponto registradado com sucesso!', 'redirecionar' => 'sistema/registrar']));
+                                }
+                                else{
+                                    exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Erro ao registrar ponto!', 'redirecionar' => 'sistema/registrar']));
+                                }
+                            }
+                        }
+                    }
+
+                }
+                else{
+                    $query = "INSERT INTO folha (id_usuario, ent1, data) VALUES (:id_usuario, :agora, :data)";
+                    $array = array(
+                        ':id_usuario' => $id_usuario,
+                        ':agora' => $agora,
+                        ':data' => $hoje
+                    );
+                    if($this->sql->insere($query, $array)){
+                        exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Ponto registradado com sucesso!', 'redirecionar' => 'sistema/registrar']));
+                    }
+                    else{
+                        exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Erro ao registrar ponto!', 'redirecionar' => 'sistema/registrar']));
+                    }
+                }
+            }
+
+        }
+
         public function cadastrar($table, $dados){
             $query = "INSERT INTO $table (";
             $campos = "";
@@ -69,6 +196,7 @@
             $valores = substr($valores, 0, -2);
             
             $query .= $campos.") VALUES (".$valores.")";
+
             if($this->sql->insere($query, $dados)){
                 exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Registro salvo com sucesso!']));
             }

@@ -101,8 +101,7 @@
         <style>
             form>.inp {
                 margin: 7px 2%;
-                width: 40%;
-
+                width: 25%;
             }
 
             form>button {

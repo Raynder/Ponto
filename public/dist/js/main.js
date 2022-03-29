@@ -2,7 +2,7 @@ var criterios = 0;
 var split = 0;
 var entao = 0;
 var campoAlvo;
-var url = "http://10.3.7.113/Ponto/";
+var url = "http://192.168.1.90/Ponto/";
 
 function selecAll(parametro) {
     return document.querySelectorAll(parametro)
@@ -58,6 +58,29 @@ function entrar(table) {
             data: {
                 dados: dados,
                 table: table
+            },
+            success: (response) => {
+                resposta = JSON.parse(response.split('resultadoJson')[1]);
+                alerta(resposta.mensagem, resposta.status);
+                setTimeout(function () {
+                    window.location.href = url + resposta.redirecionar;
+                }, 1000);
+            }
+        })
+    }
+
+}
+
+function registrar() {
+    let dados = selecValues('.conteudo-registro>.painel>.corpo>form>.inp');
+
+    if (dados) {
+        $.ajax({
+            url: url + 'conta/registrar',
+            type: 'POST',
+            data: {
+                usuario: dados.usuario,
+                senha: dados.senha
             },
             success: (response) => {
                 resposta = JSON.parse(response.split('resultadoJson')[1]);
