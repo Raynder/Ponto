@@ -25,7 +25,7 @@ if (isset($_SESSION['usuario']['nome']) && !empty($_SESSION['usuario']['nome']))
                 <a href="<?= URL ?>controle/<?= $_SESSION['usuario']['home'] ?>">
                     <li><img src="<?= DIST ?>/img/cadastro.png"></li>
                 </a>
-                <a href="<?= URL ?>controle/index">
+                <a href="<?= URL ?>tabelas/registros">
                     <li><img src="<?= DIST ?>/img/tabela.png"></li>
                 </a>
                 <!-- <a href="<?= URL ?>formPreco/regras">

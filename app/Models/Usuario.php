@@ -11,12 +11,13 @@
         }
 
         public function entrar($dados, $table){
+            // exit(print_r($dados));
             switch($table){
                 case 'colaborador':
-                    $query = "SELECT * FROM usuarios WHERE usuario = :usuario AND senha = :senha AND tipo = 1 or tipo = 3";
+                    $query = "SELECT * FROM usuarios WHERE usuario = :usuario AND senha = :senha AND tipo = 1";
                     break;
                 case 'empregador':
-                    $query = "SELECT * FROM usuarios WHERE usuario = :usuario AND senha = :senha AND tipo = 2 or tipo = 3";
+                    $query = "SELECT * FROM usuarios WHERE usuario = :usuario AND senha = :senha AND tipo = 2";
                     break;
             }
 
