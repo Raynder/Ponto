@@ -183,7 +183,13 @@
                             table: tabela
                         },
                         success: function(response) {
-                            dados = JSON.parse(response.split("resultadoJson")[1]);
+                            try{
+                                dados = JSON.parse(response.split("resultadoJson")[1]);
+                            }
+                            catch(e){
+                                dados = response;
+                            }
+
                             if (dados.mensagem == 'undefined' || dados.mensagem == undefined) {
                                 dados = dados[0]
                                 //pegar valores e colocar no formulario

@@ -2,6 +2,10 @@
 
 class Tabelas extends Controller
 {
+    public function index()
+    {
+        $this->seLogin('tabelas/visualizar');
+    }
 
     private function listarColunas()
     {
@@ -14,7 +18,7 @@ class Tabelas extends Controller
 
         $dados = array(
             'linhas' => $model->listarColaboradores(),
-            'colunas' => [['nome', 0, 1], ['email', 0, 1]],
+            'colunas' => [['nome', 0, 1], ['email', 0, 1], ['data', 0, 2], ['entrada1', 0, 2], ['saida1', 0, 2], ['entrada2', 0, 2], ['saida2', 0, 2]],
             'listas' => $this->listarColunas(),
             'lista' => 'registros'
         );
@@ -47,10 +51,15 @@ class Tabelas extends Controller
         $this->seLogin('sistema/controle', $dados);
     }
 
-    public function vizualizar(){
+    public function visualizar(){
         $model = new Folha();
-        $dados = array(
-            'linhas' => $model->listarRegistros(),
-            'colunas' => [['data', 0, 1], ['email', 0, 1], ['data', 0, 1], ['entrada', 0, 1], ['saida', 0, 1], ['justificativa', 0, 1]],
+        
+        $model->listarRegistros($_POST['valor']);
+    }
+    public function editar()
+    {
+        $model = new Usuario();
+
+        $dados = $model->editar($_POST['table'], $_POST['valor']);
     }
 }

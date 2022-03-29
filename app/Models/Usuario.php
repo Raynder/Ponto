@@ -81,22 +81,22 @@
                 if(count($resul) > 0){
                     //transformar meta em horas
                     $meta = $meta * 60 * 60;
-                    // verificar se ent1, sai1, ent2, sai2 foram preenchidos
+                    // verificar se entrada1, saida1, entrada2, saida2 foram preenchidos
 
                     $batidas = array(
-                        'ent1' => $resul[0]['ent1'],
-                        'sai1' => $resul[0]['sai1'],
-                        'ent2' => $resul[0]['ent2'],
-                        'sai2' => $resul[0]['sai2']
+                        'entrada1' => $resul[0]['entrada1'],
+                        'saida1' => $resul[0]['saida1'],
+                        'entrada2' => $resul[0]['entrada2'],
+                        'saida2' => $resul[0]['saida2']
                     );
 
                     //encontrar primeira batida vazia e salvar o horario de agora
                     foreach($batidas as $key => $value){
-                        if($key == 'sai2' && $value == '0000-00-00 00:00:00'){
+                        if($key == 'saida2' && $value == '0000-00-00 00:00:00'){
                             //calcular tempo trabalhado
-                            $entrada1 = new DateTime($batidas['ent1']);
-                            $saida1 = new DateTime($batidas['sai1']);
-                            $entrada2 = new DateTime($batidas['ent2']);
+                            $entrada1 = new DateTime($batidas['entrada1']);
+                            $saida1 = new DateTime($batidas['saida1']);
+                            $entrada2 = new DateTime($batidas['entrada2']);
                             $saida2 = new DateTime($agora);
                             $tempo_trabalhado = $saida1->diff($entrada1);
                             $tempo_trabalhado2 = $saida2->diff($entrada2);
@@ -144,7 +144,7 @@
                         }
                         else{
                             //pegar o dia da semana
-                            if($key == 'sai2'){
+                            if($key == 'saida2'){
                                 exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Você ja registrou todos os horarios de hoje!', 'redirecionar' => 'sistema/home']));
                             }
                             if($value == '0000-00-00 00:00:00'){
@@ -166,7 +166,7 @@
 
                 }
                 else{
-                    $query = "INSERT INTO folha (id_usuario, ent1, data) VALUES (:id_usuario, :agora, :data)";
+                    $query = "INSERT INTO folha (id_usuario, entrada1, data) VALUES (:id_usuario, :agora, :data)";
                     $array = array(
                         ':id_usuario' => $id_usuario,
                         ':agora' => $agora,

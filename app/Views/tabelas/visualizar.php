@@ -69,7 +69,7 @@
                 } else {
                     if ($coluna[1] == 1) {
                         #checkbox
-                        echo ('<br>'.$coluna[0] . "<input style='width:10px' class='inp' type='checkbox' name='" . $coluna[0] . "'>");
+                        echo ('<br>' . $coluna[0] . "<input style='width:10px' class='inp' type='checkbox' name='" . $coluna[0] . "'>");
                     } else {
                         echo ("<select class='inp' name='" . $coluna[0] . "'>");
                         echo ("<option value=''>Selecione</option>");
@@ -168,17 +168,21 @@
                     e = e.target
                     funcao = e.getAttribute('funcao');
                     valor = e.getAttribute('valor');
-                    tabela = e.getAttribute('tabela');
+
+                    console.log(funcao, valor);
 
                     $.ajax({
                         url: funcao,
                         type: 'POST',
                         data: {
                             valor: valor,
-                            table: tabela
                         },
                         success: function(response) {
-                            dados = JSON.parse(response.split("resultadoJson")[1]);
+                            try {
+                                dados = JSON.parse(response.split("resultadoJson")[1]);
+                            } catch (e) {
+                                dados = response;
+                            }
                             if (dados.mensagem == 'undefined' || dados.mensagem == undefined) {
                                 dados = dados[0]
                                 //pegar valores e colocar no formulario

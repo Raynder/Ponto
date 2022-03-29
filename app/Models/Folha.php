@@ -21,4 +21,15 @@
             }
         }
 
+        public function listarRegistros($id){
+            $query = "SELECT * FROM folha WHERE id_usuario = :id_usuario";
+
+            if($result = $this->sql->select($query, array(':id_usuario' => $id))){
+                exit("resultadoJson".json_encode($result));
+            }
+            else{
+                exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Erro ao tentar editar campo!']));
+            }
+        }
+
     }
