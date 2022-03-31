@@ -62,4 +62,10 @@ class Tabelas extends Controller
 
         $dados = $model->editar($_POST['table'], $_POST['valor']);
     }
+
+    public function alterarHorarioColaborador(){
+        $model = new Folha();
+
+        $model->alterarHorarioColaborador($_POST['linhaAtual'], $_POST['dataAtual'], $_POST['valor'], $_POST['idUser']);
+    }
 }

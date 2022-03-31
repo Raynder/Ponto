@@ -58,48 +58,54 @@
             <button onclick="trocar()">Listar</button>
         </div>
 
-        <!-- Formulario -->
-        <form action="">
-            <!-- um for para criar input para cada item da coluna -->
-            <?php
-            foreach ($dados['colunas'] as $coluna) {
-                if ($coluna[1] == 0) {
-                    $coluna = $coluna[0];
-                    echo ("<input class='inp' type='text' name='" . $coluna . "' placeholder='" . ucfirst(str_replace('_', ' ', $coluna)) . "'>");
-                } else {
-                    if ($coluna[1] == 1) {
-                        #checkbox
-                        echo ('<br>' . $coluna[0] . "<input style='width:10px' class='inp' type='checkbox' name='" . $coluna[0] . "'>");
-                    } else {
-                        echo ("<select class='inp' name='" . $coluna[0] . "'>");
-                        echo ("<option value=''>Selecione</option>");
-                        foreach ($coluna[1] as $opt) {
-                            #verificar se contém :
-                            if (strpos($opt, ':') !== false) {
-                                $opt = explode(':', $opt);
-                                echo ("<option value='" . $opt[0] . "'>" . $opt[1] . "</option>");
-                            } else {
-                                echo ("<option value='" . $opt . "'>" . $opt . "</option>");
-                            }
-                        }
-                        echo ("</select>");
-                    }
-                }
-            }
-            ?>
+        <div class="tab">
+            <table class="tabelaV">
+                <thead>
+                    <tr style="display: flex;">
+                        <th>Data</th>
+                        <th>Entrada 1</th>
+                        <th>Saida 1</th>
+                        <th>Entrada 2</th>
+                        <th>Saida 2</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tr-text">
+                    <tr style="display: flex;">
+                        <td><input type="text" style="width: 100%;" class="celula"></td>
+                        <td><input type="text" style="width: 100%;" class="celula"></td>
+                        <td><input type="text" style="width: 100%;" class="celula"></td>
+                        <td><input type="text" style="width: 100%;" class="celula"></td>
+                        <td><input type="text" style="width: 100%;" class="celula"></td>
+                        <td><input type="text" style="width: 100%;" class="celula"></td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <input type="text" class="inp" value="0" name="id" style="display: none;">
+        </div>
 
-            <button id="enviar">Enviar</button>
 
-        </form>
+
+        <button id="enviar">Salvar</button>
+
         <style>
+            .tabelaV>thead>tr>td,
+            .tabelaV>thead>tr>th {
+                width: 16%;
+                /* border-collapse: collapse; */
+            }
+
             form>.inp {
                 margin: 7px 2%;
                 width: 25%;
             }
 
-            form>button {
+            .celula {
+                width: 100%;
+                text-align: center;
+            }
+
+            button {
                 min-width: 15%;
                 margin: 10px;
                 background: #1d1552;
@@ -169,8 +175,6 @@
                     funcao = e.getAttribute('funcao');
                     valor = e.getAttribute('valor');
 
-                    console.log(funcao, valor);
-
                     $.ajax({
                         url: funcao,
                         type: 'POST',
@@ -184,23 +188,80 @@
                                 dados = response;
                             }
                             if (dados.mensagem == 'undefined' || dados.mensagem == undefined) {
-                                dados = dados[0]
+                                // dados = dados[0]
                                 //pegar valores e colocar no formulario
-                                selecAll('form>.inp').forEach(function(input) {
-                                    if(input.value == 'on' && dados[input.name] == 1){
-                                        input.checked = true;
-                                    }
-                                    input.value = dados[input.name];
+                                // para cada linha em dados
+                                html = '';
+                                dados.forEach(function(linha) {
+                                    html += '<tr style="display: flex;">';
+                                    html += '<td><input data-atual="' + linha.data + '" idUser="' + linha.id_usuario + '" linha-atual="data" type="text" style="width: 100%;" class="celula" value="' + linha.data.replaceAll('-', '/') + '"></td>';
+                                    html += '<td><input data-atual="' + linha.data + '" idUser="' + linha.id_usuario + '" linha-atual="entrada1" type="text" style="width: 100%;" class="celula" value="' + linha.entrada1.replaceAll(linha.data, '').replaceAll('-', ':').replace('undefined', '').replace('0000:00:00', '') + '"></td>';
+                                    html += '<td><input data-atual="' + linha.data + '" idUser="' + linha.id_usuario + '" linha-atual="saida1" type="text" style="width: 100%;" class="celula" value="' + linha.saida1.replaceAll(linha.data, '').replaceAll('-', ':').replace('undefined', '').replace('0000:00:00', '') + '"></td>';
+                                    html += '<td><input data-atual="' + linha.data + '" idUser="' + linha.id_usuario + '" linha-atual="entrada2" type="text" style="width: 100%;" class="celula" value="' + linha.entrada2.replaceAll(linha.data, '').replaceAll('-', ':').replace('undefined', '').replace('0000:00:00', '') + '"></td>';
+                                    html += '<td><input data-atual="' + linha.data + '" idUser="' + linha.id_usuario + '" linha-atual="saida2" type="text" style="width: 100%;" class="celula" value="' + linha.saida2.replaceAll(linha.data, '').replaceAll('-', ':').replace('undefined', '').replace('0000:00:00', '') + '"></td>';
+                                    html += '<td><input data-atual="' + linha.data + '" idUser="' + linha.id_usuario + '" linha-atual="value" type="text" style="width: 100%;" class="celula" disabled="disabled" value="' + linha.saldo.replace('undefined', '') + '"></td>';
+                                    html += '</tr>';
                                 });
+
+                                document.getElementById('tr-text').innerHTML = html;
+
                                 trocar()
                             } else {
                                 alerta(dados.mensagem, dados.status);
+                                // setTimeout(function() {
+                                //     location.reload();
+                                // }, 1000);
+                            }
+                        }
+
+                    })
+                    // adicionar evento change ao aos inputs da tabela 
+                    // para atualizar o saldo
+                    $('#tr-text').on('change', 'input', function() {
+                        Swal.fire({
+                            title: 'Deseja alterar esse valor?',
+                            showCancelButton: true,
+                            confirmButtonText: 'Sim',
+                            customClass: {
+                                actions: 'my-actions',
+                                cancelButton: 'order-1 right-gap',
+                                confirmButton: 'order-2',
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // pegar o valor do input
+                                valor = $(this).val();
+                                dataAtual = $(this).attr('data-atual');
+                                linhaAtual = $(this).attr('linha-atual');
+                                idUser = $(this).attr('idUser');
+
+                                $.ajax({
+                                    url: 'alterarHorarioColaborador',
+                                    type: 'POST',
+                                    data: {
+                                        valor: valor,
+                                        linhaAtual: linhaAtual,
+                                        dataAtual: dataAtual,
+                                        idUser: idUser
+                                    },
+                                    success: function(response) {
+                                        dados = JSON.parse(response.split("resultadoJson")[1]);
+                                        alerta(dados.mensagem, dados.status);
+                                        setTimeout(function() {
+                                            location.reload();
+                                        }, 1000);
+                                    }
+
+                                })
+                            } else {
+                                alerta('Operação cancelada', 'warning');
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1000);
                             }
-                        }
-                    })
+                        })
+
+                    });
                 });
             });
         }

@@ -32,4 +32,17 @@
             }
         }
 
+        public function alterarHorarioColaborador($linhaAtual, $dataAtual, $valor, $idUser){
+            $query = "SELECT saida2 FROM folha WHERE id_usuario = ".$idUser." AND data = '".$dataAtual."'";
+            
+            $query = "UPDATE folha SET ".$linhaAtual." = '".$dataAtual.$valor."' WHERE id_usuario = ".$idUser." AND data = '".$dataAtual."'";
+
+            if($this->sql->update($query)){
+                exit("resultadoJson".json_encode(['status' => 'success', 'mensagem' => 'Horário alterado com sucesso!']));
+            }
+            else{
+                exit("resultadoJson".json_encode(['status' => 'error', 'mensagem' => 'Erro ao tentar editar campo!']));
+            }
+        }
+
     }
