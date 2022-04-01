@@ -92,24 +92,43 @@
 
                     //encontrar primeira batida vazia e salvar o horario de agora
                     foreach($batidas as $key => $value){
-                        if($key == 'saida2' && $value == '0000-00-00 00:00:00'){
+                        if(($key == 'saida1' || $key == 'saida2') && $value == '0000-00-00 00:00:00'){
                             //calcular tempo trabalhado
+                            //converter valores em datatime
                             $entrada1 = new DateTime($batidas['entrada1']);
                             $saida1 = new DateTime($batidas['saida1']);
                             $entrada2 = new DateTime($batidas['entrada2']);
-                            $saida2 = new DateTime($agora);
+                            $saida2 = new DateTime($batidas['saida2']);
+
+                            if($key == 'saida1'){
+                                $saida1 = new DateTime($agora);
+                            }
+                            else{
+                                $saida2 = new DateTime($agora);
+                            }
+                            //calcular diferença de de turnos
                             $tempo_trabalhado = $saida1->diff($entrada1);
+                            print_r($tempo_trabalhado);
                             $tempo_trabalhado2 = $saida2->diff($entrada2);
 
                             // somar as diferenças
                             $tempo_trabalhado = $tempo_trabalhado->format('%H:%I:%S');
+                            print_r($tempo_trabalhado);
                             $tempo_trabalhado2 = $tempo_trabalhado2->format('%H:%I:%S');
                             $tempo_trabalhado = explode(':', $tempo_trabalhado);
                             $tempo_trabalhado2 = explode(':', $tempo_trabalhado2);
+                            print_r($tempo_trabalhado);
                             $tempo_trabalhado = $tempo_trabalhado[0] * 3600 + $tempo_trabalhado[1] * 60 + $tempo_trabalhado[2];
+
                             $tempo_trabalhado2 = $tempo_trabalhado2[0] * 3600 + $tempo_trabalhado2[1] * 60 + $tempo_trabalhado2[2];
-                            $tempo_trabalhado = $tempo_trabalhado + $tempo_trabalhado2;
+                            if($key == 'saida2'){
+                                $tempo_trabalhado = $tempo_trabalhado + $tempo_trabalhado2;
+                            }
                             $tempo = $tempo_trabalhado;
+
+                            print_r($meta);
+                            echo("<br>");
+                            exit(print_r($tempo));
 
                             //transformar tempo_trabalhado em horas e minutos
                             $tempo_trabalhado = gmdate("H:i:s", $tempo_trabalhado);
