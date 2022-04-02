@@ -66,6 +66,6 @@ class Tabelas extends Controller
     public function alterarHorarioColaborador(){
         $model = new Folha();
 
-        $model->alterarHorarioColaborador($_POST['linhaAtual'], $_POST['dataAtual'], $_POST['valor'], $_POST['idUser']);
+        $model->alterarHorarioColaborador($_POST['linhaAtual'], $_POST['dataAtual'], $_POST['valor'], $_POST['idUser'], $_POST['observacao']);
     }
 }

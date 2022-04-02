@@ -34,7 +34,7 @@ class Folha
         }
     }
 
-    public function alterarHorarioColaborador($linhaAtual, $dataAtual, $valor, $idUser)
+    public function alterarHorarioColaborador($linhaAtual, $dataAtual, $valor, $idUser, $observacao)
     {
         $semana = array('domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado');
 
@@ -50,13 +50,18 @@ class Folha
                 $meta = $result[0]['meta'];
                 $meta = $meta * 60 * 60;
                 //Calcular horario trabalhado
-                $entrada1 = new DateTime($result[0]['entrada1']);
-                $saida1 = new DateTime($result[0]['saida1']);
-                $entrada2 = new DateTime($result[0]['entrada2']);
-                $saida2 = new DateTime($result[0]['saida2']);
 
-                $tempo_trabalhado = $saida1->diff($entrada1);
-                $tempo_trabalhado2 = $saida2->diff($entrada2);
+                $batidas = array(
+                    'entrada1' => new DateTime($result[0]['entrada1']),
+                    'saida1' => new DateTime($result[0]['saida1']),
+                    'entrada2' => new DateTime($result[0]['entrada2']),
+                    'saida2' => new DateTime($result[0]['saida2']),
+                );
+
+                $batidas[$linhaAtual] = new DateTime($dataAtual.$valor);
+                
+                $tempo_trabalhado = $batidas['saida1']->diff($batidas['entrada1']);
+                $tempo_trabalhado2 = $batidas['saida2']->diff($batidas['entrada2']);
 
                 // somar as diferenças
                 $tempo_trabalhado = $tempo_trabalhado->format('%H:%I:%S');
@@ -68,8 +73,8 @@ class Folha
                 $tempo_trabalhado2 = $tempo_trabalhado2[0] * 3600 + $tempo_trabalhado2[1] * 60 + $tempo_trabalhado2[2];
 
                 $tempo = $tempo_trabalhado + $tempo_trabalhado2;
-                $tempo_trabalhado = gmdate('H:i:s', $tempo_trabalhado + $tempo_trabalhado2);
-
+                $tempo_trabalhado = gmdate('H:i:s', $tempo);
+                
                 if($meta > $tempo){
                     $saldo = $meta - $tempo;
                     $saldo = '-'.gmdate("H:i:s", $saldo);
@@ -78,8 +83,10 @@ class Folha
                     $saldo = $tempo - $meta;
                     $saldo = gmdate("H:i:s", $saldo);
                 }
+                // print_r($saldo);
+                // exit(print_r($tempo_trabalhado));
                 
-                $query = "UPDATE folha SET " . $linhaAtual . " = '" . $dataAtual . $valor . "', tempo_trabalhado = '" . $tempo_trabalhado . "', saldo = '" . $saldo . "' WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
+                $query = "UPDATE folha SET " . $linhaAtual . " = '" . $dataAtual . $valor . "', tempo_trabalhado = '" . $tempo_trabalhado . "', saldo = '" . $saldo . "', observacao = '" . $observacao . "' WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
 
                 if ($this->sql->update($query)) {
                     exit("resultadoJson" . json_encode(['status' => 'success', 'mensagem' => 'Horário alterado com sucesso!']));
@@ -89,7 +96,7 @@ class Folha
             }
             //Se não, somente registrar o horario
             else {
-                $query = "UPDATE folha SET " . $linhaAtual . " = '" . $dataAtual . $valor . "' WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
+                $query = "UPDATE folha SET " . $linhaAtual . " = '" . $dataAtual . $valor . "', observacao = '" . $observacao . "' WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
 
                 if ($this->sql->update($query)) {
                     exit("resultadoJson" . json_encode(['status' => 'success', 'mensagem' => 'Horário alterado com sucesso!']));

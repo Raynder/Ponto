@@ -218,48 +218,48 @@
                     // adicionar evento change ao aos inputs da tabela 
                     // para atualizar o saldo
                     $('#tr-text').on('change', 'input', function() {
+
                         Swal.fire({
-                            title: 'Deseja alterar esse valor?',
-                            showCancelButton: true,
-                            confirmButtonText: 'Sim',
-                            customClass: {
-                                actions: 'my-actions',
-                                cancelButton: 'order-1 right-gap',
-                                confirmButton: 'order-2',
+                            title: 'Alterar Horário?',
+                            html: `<input type="text" id="obs" class="swal2-input" placeholder="Observação">`,
+                            confirmButtonText: 'Alterar',
+                            focusConfirm: false,
+                            preConfirm: () => {
+                                const obs = Swal.getPopup().querySelector('#obs').value
+                                if (!obs) {
+                                    Swal.showValidationMessage(`Para continuar defina uma observação`)
+                                }
+                                return { obs: obs}
                             }
                         }).then((result) => {
-                            if (result.isConfirmed) {
-                                // pegar o valor do input
-                                valor = $(this).val();
-                                dataAtual = $(this).attr('data-atual');
-                                linhaAtual = $(this).attr('linha-atual');
-                                idUser = $(this).attr('idUser');
+                            // pegar o valor do input
+                            obs = result.value.obs;
+                            valor = $(this).val();
+                            dataAtual = $(this).attr('data-atual');
+                            linhaAtual = $(this).attr('linha-atual');
+                            idUser = $(this).attr('idUser');
 
-                                $.ajax({
-                                    url: 'alterarHorarioColaborador',
-                                    type: 'POST',
-                                    data: {
-                                        valor: valor,
-                                        linhaAtual: linhaAtual,
-                                        dataAtual: dataAtual,
-                                        idUser: idUser
-                                    },
-                                    success: function(response) {
-                                        dados = JSON.parse(response.split("resultadoJson")[1]);
-                                        alerta(dados.mensagem, dados.status);
-                                        setTimeout(function() {
-                                            location.reload();
-                                        }, 1000);
-                                    }
+                            $.ajax({
+                                url: 'alterarHorarioColaborador',
+                                type: 'POST',
+                                data: {
+                                    valor: valor,
+                                    linhaAtual: linhaAtual,
+                                    dataAtual: dataAtual,
+                                    idUser: idUser,
+                                    observacao: obs
+                                },
+                                success: function(response) {
+                                    dados = JSON.parse(response.split("resultadoJson")[1]);
+                                    alerta(dados.mensagem, dados.status);
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1000);
+                                }
 
-                                })
-                            } else {
-                                alerta('Operação cancelada', 'warning');
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 1000);
-                            }
+                            })
                         })
+
 
                     });
                 });
