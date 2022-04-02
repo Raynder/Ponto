@@ -2,7 +2,7 @@ var criterios = 0;
 var split = 0;
 var entao = 0;
 var campoAlvo;
-var url = "http://192.168.1.41:8080/Ponto/";
+var url = "http://192.168.1.29/Ponto/";
 
 function selecAll(parametro) {
     return document.querySelectorAll(parametro)

@@ -1,7 +1,7 @@
 /* Estilos do painel do site */
 a {
     text-decoration: none;
-    color: inherit;
+    color: currentColor;
 }
 
 body {
@@ -192,3 +192,9 @@ ul.pagination li a:hover:not(.active) {
 }
 
 /* Fim do estilo de configuração do painel */
+
+/* Estilo da pagina de Login */
+.conteudo-registro>div>.corpo>nav>ul>.ativo{
+    background: #1c1450;
+    color: white;
+}

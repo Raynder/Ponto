@@ -57,7 +57,7 @@
         }
 
         public function registrar($usuario, $senha){
-            $semana = array('','domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado');
+            $semana = array('domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado');
             
             $dia_semana = $semana[date('w')];
             // Buscar id do usuário
@@ -108,16 +108,13 @@
                             }
                             //calcular diferença de de turnos
                             $tempo_trabalhado = $saida1->diff($entrada1);
-                            print_r($tempo_trabalhado);
                             $tempo_trabalhado2 = $saida2->diff($entrada2);
 
                             // somar as diferenças
                             $tempo_trabalhado = $tempo_trabalhado->format('%H:%I:%S');
-                            print_r($tempo_trabalhado);
                             $tempo_trabalhado2 = $tempo_trabalhado2->format('%H:%I:%S');
                             $tempo_trabalhado = explode(':', $tempo_trabalhado);
                             $tempo_trabalhado2 = explode(':', $tempo_trabalhado2);
-                            print_r($tempo_trabalhado);
                             $tempo_trabalhado = $tempo_trabalhado[0] * 3600 + $tempo_trabalhado[1] * 60 + $tempo_trabalhado[2];
 
                             $tempo_trabalhado2 = $tempo_trabalhado2[0] * 3600 + $tempo_trabalhado2[1] * 60 + $tempo_trabalhado2[2];
@@ -126,10 +123,7 @@
                             }
                             $tempo = $tempo_trabalhado;
 
-                            print_r($meta);
-                            echo("<br>");
-                            exit(print_r($tempo));
-
+                            
                             //transformar tempo_trabalhado em horas e minutos
                             $tempo_trabalhado = gmdate("H:i:s", $tempo_trabalhado);
                             if($meta > $tempo){
@@ -141,7 +135,6 @@
                                 $saldo = gmdate("H:i:s", $saldo);
                             }
                             echo($saldo);
-                            // exit();
                             
 
                             $query = "UPDATE folha SET $key = :$key, tempo_trabalhado = :tempo_trabalhado, saldo = :saldo WHERE id_usuario = :id_usuario AND data = :data";
