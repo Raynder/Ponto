@@ -36,11 +36,19 @@ class Folha
 
     public function alterarHorarioColaborador($linhaAtual, $dataAtual, $valor, $idUser)
     {
-        $query = "SELECT * FROM folha WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
+        $semana = array('domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado');
 
-        if ($result = $this->sql->select($query)) {
+        $dia_semana = $semana[date('w')];
+
+        $query = "SELECT folha.*, usuarios.id, escalas.".$dia_semana." as meta FROM usuarios INNER JOIN escalas ON usuarios.escala = escalas.id INNER JOIN folha ON folha.id_usuario = usuarios.id WHERE usuarios.id = :id_usuario AND folha.data = :data";
+        $array = array(':id_usuario' => $idUser, ':data' => $dataAtual);
+
+        if ($result = $this->sql->select($query, $array)) {
             //Se todos os horarios estiverem batidos, calcula o total de horas trabalhadas e registrar no banco
             if ($result[0]['entrada1'] != '0000-00-00 00:00:00' && $result[0]['saida1'] != '0000-00-00 00:00:00' && $result[0]['entrada2'] != '0000-00-00 00:00:00' && $result[0]['saida2'] != '0000-00-00 00:00:00') {
+                //Transformar meta em tempo
+                $meta = $result[0]['meta'];
+                $meta = $meta * 60 * 60;
                 //Calcular horario trabalhado
                 $entrada1 = new DateTime($result[0]['entrada1']);
                 $saida1 = new DateTime($result[0]['saida1']);
@@ -59,8 +67,19 @@ class Folha
 
                 $tempo_trabalhado2 = $tempo_trabalhado2[0] * 3600 + $tempo_trabalhado2[1] * 60 + $tempo_trabalhado2[2];
 
+                $tempo = $tempo_trabalhado + $tempo_trabalhado2;
                 $tempo_trabalhado = gmdate('H:i:s', $tempo_trabalhado + $tempo_trabalhado2);
-                $query = "UPDATE folha SET " . $linhaAtual . " = '" . $dataAtual . $valor . "', horas_trabalhadas = '" . $tempo_trabalhado . "' WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
+
+                if($meta > $tempo){
+                    $saldo = $meta - $tempo;
+                    $saldo = '-'.gmdate("H:i:s", $saldo);
+                }
+                else{
+                    $saldo = $tempo - $meta;
+                    $saldo = gmdate("H:i:s", $saldo);
+                }
+                
+                $query = "UPDATE folha SET " . $linhaAtual . " = '" . $dataAtual . $valor . "', tempo_trabalhado = '" . $tempo_trabalhado . "', saldo = '" . $saldo . "' WHERE id_usuario = " . $idUser . " AND data = '" . $dataAtual . "'";
 
                 if ($this->sql->update($query)) {
                     exit("resultadoJson" . json_encode(['status' => 'success', 'mensagem' => 'Horário alterado com sucesso!']));
@@ -78,7 +97,6 @@ class Folha
                     exit("resultadoJson" . json_encode(['status' => 'error', 'mensagem' => 'Erro ao tentar editar campo!']));
                 }
             }
-
         } else {
             exit("resultadoJson" . json_encode(['status' => 'error', 'mensagem' => 'Erro ao tentar editar campo!']));
         }
