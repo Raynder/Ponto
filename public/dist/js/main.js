@@ -86,7 +86,7 @@ function registrar() {
                 resposta = JSON.parse(response.split('resultadoJson')[1]);
                 alerta(resposta.mensagem, resposta.status);
                 setTimeout(function () {
-                    window.location.href = url + resposta.redirecionar;
+                    // window.location.href = url + resposta.redirecionar;
                 }, 1000);
             }
         })

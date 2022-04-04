@@ -204,14 +204,14 @@ class Usuario
 
     private function registrarRecursivo($id_usuario, $data)
     {
-        echo('entrou na recursividade');
+        echo('entrou na recursividade com a data ' . $data);
         $semana = array('domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado');
 
         //Pegar dia da semana com a data informada
         $dia_semana = $semana[date('w', strtotime($data))];
         
         //Query que me retorna os dados do usuario junto com a folha dele do dia $data
-        $query = "SELECT usuarios.nome, escalas.$dia_semana as meta, folha.data FROM usuarios INNER JOIN escalas ON usuarios.escala = escalas.id INNER JOIN folha WHERE usuarios.id = :id_usuario;";
+        $query = "SELECT usuarios.nome, escalas.$dia_semana as meta, folha.data FROM usuarios INNER JOIN escalas ON usuarios.escala = escalas.id INNER JOIN folha WHERE usuarios.id = :id_usuario AND folha.id_usuario = :id_usuario;";
         $array = array(
             ':id_usuario' => $id_usuario
         );
@@ -224,6 +224,8 @@ class Usuario
             $meta = $resul[0]['meta'];
 
             if($this->BuscarDataEmArray($data, $resul)){
+                echo("Encontrou a data".$data." no array");
+                print_r($resul);
                 return true;
             }
             else{
